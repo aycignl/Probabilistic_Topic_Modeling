@@ -1,81 +1,137 @@
-from nltk.tokenize import RegexpTokenizer
-from stop_words import get_stop_words
-from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import gensim
 
-tokenizer = RegexpTokenizer(r'\w+')
+import sys
+import os
 
-# create English stop words list
-en_stop = get_stop_words('en')
 
-# Create p_stemmer of class PorterStemmer
-p_stemmer = PorterStemmer()
-    
-# create sample documents
-doc_a = "Brocolli is good to eat. My brother likes to eat good brocolli, but not my mother."
-doc_b = "My mother spends a lot of time driving my brother around to baseball practice."
-doc_c = "Some health experts suggest that driving may cause increased tension and blood pressure."
-doc_d = "I often feel pressure to perform well at school, but my mother never seems to drive my brother to do better."
-doc_e = "Health professionals say that brocolli is good for your health." 
-doc_test = "Pickle is the standard way of serializing objects in Python."
+def classify(train_filename,test_filename):
 
-# compile sample documents into a list
-doc_set = [doc_a, doc_b, doc_c, doc_d, doc_e]
-doc_set2 = [doc_test]
-# list for tokenized documents in loop
-texts = []
+	train_result = train(train_filename)
+	ldamodel = train_result['ldamodel']
+	topic_results_train = train_result['train_topics']
+	train_family_list = train_result['family_list']
+	topic_dict = getFamilyTopicPairs(topic_results_train, train_family_list)
 
-# loop through document list
-for i in doc_set:
-    
-    # clean and tokenize document string
-    raw = i.lower()
-    tokens = tokenizer.tokenize(raw)
+	test_result = test(test_filename,ldamodel)
 
-    # remove stop words from tokens
-    stopped_tokens = [i for i in tokens if not i in en_stop]
-    
-    # stem tokens
-    stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
-    
-    # add tokens to list
-    texts.append(stemmed_tokens)
+	topic_results_test = test_result['test_topics']
+	test_family_list = test_result['family_list']
+	predicted_labels = getPredictedLabels(topic_results_test, topic_dict)
 
-# turn our tokenized documents into a id <-> term dictionary
-dictionary = corpora.Dictionary(texts)
-    
-# convert tokenized documents into a document-term matrix
-corpus = [dictionary.doc2bow(text) for text in texts]
+	result = {}
+	result['reallabels'] = test_family_list
+	result['predictedlabels'] = predicted_labels
 
-texts2 = []
-# loop through document list
-for i in doc_set2:
-    
-    # clean and tokenize document string
-    raw = i.lower()
-    tokens = tokenizer.tokenize(raw)
+	result['test_topics'] = topic_results_test
+	result['train_topics'] = topic_results_train
+	result['train_family_list'] = train_family_list
+	result['test_family_list'] = test_family_list
+	result['top_topics'] = topic_dict.keys()
 
-    # remove stop words from tokens
-    stopped_tokens = [i for i in tokens if not i in en_stop]
-    
-    # stem tokens
-    stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
-    
-    # add tokens to list
-    texts2.append(stemmed_tokens)
 
-# turn our tokenized documents into a id <-> term dictionary
-dictionary2 = corpora.Dictionary(texts2)
-    
-# convert tokenized documents into a document-term matrix
-corpus2 = [dictionary2.doc2bow(text) for text in texts2]
+	return result
 
-# generate LDA model
-ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=3, id2word = dictionary, passes=20)
-print(ldamodel.print_topics(num_topics=3, num_words=4))
 
-doc_lda = ldamodel[corpus2]
-print
-print(doc_lda.print_topics(5))
+def test(test_filename,ldamodel):
+	test_file = open(test_filename, encoding="utf-8")
+	test_data = test_file.readlines()
+	test_kmers = []
+	family_list = []
+	for prot in test_data:
+		info = prot.split()
+		family_list.append(info[0])
+		kmers = info[2:]
+		test_kmers.append(kmers)
 
+	
+	dictionary = corpora.Dictionary(test_kmers)
+
+	corpus = [dictionary.doc2bow(text) for text in test_kmers]
+
+	
+
+	result_dict = {}
+	
+	doc_lda = ldamodel[corpus]
+
+	result_dict['test_topics'] = doc_lda
+	result_dict['family_list'] = family_list
+
+	return result_dict
+
+
+def train(train_filename):
+	train_file = open(train_filename, encoding="utf-8")
+	train_data = train_file.readlines()
+	train_kmers = []
+	family_list = []
+	for prot in train_data:
+		print(prot)
+		info = prot.split()
+		family_list.append(info[0])
+		kmers = info[2:]
+		train_kmers.append(kmers)
+
+	print(len(train_kmers))
+	print(train_kmers[2])
+	dictionary = corpora.Dictionary(train_kmers)
+
+	corpus = [dictionary.doc2bow(text) for text in train_kmers]
+
+	print(len(corpus))
+	ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=10, id2word = dictionary, passes=20) #topic number selection??? according to family?
+
+	result_dict = {}
+	result_dict['ldamodel'] = ldamodel
+
+	doc_lda = ldamodel[corpus]
+
+	result_dict['train_topics'] = doc_lda
+	result_dict['family_list'] = family_list
+
+	return result_dict
+
+
+
+def getFamilyTopicPairs(topicResults, familyList):
+	topic_family_dict = {}
+	intermediate_dict = {}
+	index = 0
+	for item in topicResults:
+		family_name = familyList[index]
+		max_topic =  max(item, key=lambda x: x[1])
+		if max_topic[0] in intermediate_dict:
+			temp_dict = intermediate_dict[max_topic[0]]
+			if family_name in temp_dict:
+				score = temp_dict[family_name]
+				score = score + 1
+				temp_dict[family_name] = score
+			else:
+				temp_dict[family_name] = 1
+
+			intermediate_dict[max_topic[0]] = temp_dict
+		else:
+			temp_dict = {}
+			temp_dict[family_name] = 1
+			intermediate_dict[max_topic[0]] = temp_dict
+
+		index = index + 1
+
+	for topicKey in intermediate_dict.keys():
+		topicValue = intermediate_dict[topicKey]
+		top_scored_family = max(topicValue.keys(), key=(lambda key: topicValue[key]))
+		topic_family_dict[topicKey] = top_scored_family
+
+	return topic_family_dict
+
+def getPredictedLabels(topicResults, topicDict):
+	predictedLabels = []
+	for item in topicResults:
+		max_topic =  max(item, key=lambda x: x[1])
+		if max_topic[0] in topicDict:
+			predictedLabels.append(topicDict[max_topic[0]])
+		else:
+			predictedLabels.append(-1)
+
+	return predictedLabels

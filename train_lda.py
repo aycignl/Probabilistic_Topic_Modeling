@@ -5,7 +5,7 @@ import sys
 import os
 
 
-def train_lda(train_filename):
+def train(train_filename):
 	train_file = open(train_filename, encoding="utf-8")
 	train_data = train_file.readlines()
 	train_kmers = []
