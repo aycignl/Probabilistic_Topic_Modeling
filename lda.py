@@ -4,7 +4,6 @@ import gensim
 import sys
 import os
 
-
 def classify(train_filename,test_filename):
 
 	train_result = train(train_filename)
@@ -39,9 +38,11 @@ def test(test_filename,ldamodel):
 	test_kmers = []
 	family_list = []
 	for prot in test_data:
-		info = prot.split()
+		prot = prot.replace('"','')
+		prot = prot.strip()
+		info = prot.split(',')
 		family_list.append(info[0])
-		kmers = info[2:]
+		kmers = info[3:]
 		test_kmers.append(kmers)
 
 	
@@ -67,20 +68,18 @@ def train(train_filename):
 	train_kmers = []
 	family_list = []
 	for prot in train_data:
-		print(prot)
-		info = prot.split()
+		prot = prot.replace('"','')
+		prot = prot.strip()
+		info = prot.split(',')
 		family_list.append(info[0])
-		kmers = info[2:]
+		kmers = info[3:]
 		train_kmers.append(kmers)
 
-	print(len(train_kmers))
-	print(train_kmers[2])
 	dictionary = corpora.Dictionary(train_kmers)
 
 	corpus = [dictionary.doc2bow(text) for text in train_kmers]
 
-	print(len(corpus))
-	ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=10, id2word = dictionary, passes=20) #topic number selection??? according to family?
+	ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics= 10000, id2word = dictionary, passes=5) #topic number selection??? according to family?
 
 	result_dict = {}
 	result_dict['ldamodel'] = ldamodel

@@ -21,9 +21,11 @@ def main():
 	results = {}
 
 	#if mode == 1: # "mostProbableWins": default
+	print("Start classifying with lda.")
 	results = lda.classify(trainFile, testFile)
 	showConfusionMatrix(results,"Best Topic Assigned LDA")
 
+	print("Start classifying with lda svm.")
 	#best half topics for sentence
 	results = ldasvm.classify(results)
 	showConfusionMatrix(results,"Probable Topic Assigned LDA - SVM")
@@ -33,8 +35,8 @@ def main():
 def showConfusionMatrix(results,caption):
 	real_labels = results['reallabels']
 	predicted_labels = results['predictedlabels']
-	class_names = set(real_labels)
-	cnf_matrix = confusion_matrix(real_labels, predicted_labels)
+	class_names = list(set(real_labels))
+	cnf_matrix = confusion_matrix(real_labels, predicted_labels, labels = class_names)
 
 	acc = np.asarray(cnf_matrix)
 	print("Accuracy : "+str(np.trace(acc)/np.sum(acc)))
