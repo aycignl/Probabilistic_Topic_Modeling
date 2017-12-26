@@ -1,0 +1,129 @@
+\documentclass{beamer}
+
+\usepackage{subfig}
+\usepackage[export]{adjustbox}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{soul}
+\usepackage[font=small,labelfont=bf]{caption}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{color,soul}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{setspace}
+
+\usepackage{hyperref}
+\hypersetup{
+%	colorlinks=true,
+%	linkcolor=blue,
+%	filecolor=white,      
+	urlcolor=blue,
+}
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+
+\usepackage{multirow}
+\usepackage{array}
+
+\usepackage{amsmath,lipsum}
+\newenvironment{smallalign}{\par\nobreak\tiny\align}{\endalign}
+
+\newcommand*\rot{\rotatebox{90}}
+% ----------- LANGUAGE ---------
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+
+% --------- <STYLE> ----------
+
+\usetheme{cmpe}
+\setbeamercovered{dynamic}
+\setbeamertemplate{items}[square]
+\setbeamertemplate{enumerate items}[default]
+\usefonttheme[onlymath]{serif}
+%\usefonttheme{serif}
+\beamertemplatenavigationsymbolsempty
+
+
+% First vspace for frametitle, second for content:
+\addtobeamertemplate{frametitle}{\vspace*{0cm}}{\vspace*{0.3cm}}
+% --------------------------------------
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\title[]{CMPE 59H - Project \\\tiny Probabilistic Topic Modeling for the Analysis and Classification of Genomic Sequences
+} % The short title appears at the bottom of every slide, the full title is only on the title page
+\author{G\"{o}n\"{u}l Aycı \& Dilara Keküllüoğlu}
+\institute[]{
+	\inst{} Computer Engineering, Boğaziçi University\\ \textbf{Instructor}: Assoc. Dr. Arzucan ÖZGÜR}
+
+\definecolor{bounblue}{RGB}{16,76,143}
+\setbeamercolor{title}{bg=bounblue,fg=white}
+
+\titlegraphic{\includegraphics[scale=.22]{figures/boun.png} \hspace*{1cm} \includegraphics[scale=.075]{figures/ailab.png}}
+
+\date{\today}
+
+%for backup slides
+\newcommand{\backupbegin}{
+	\newcounter{finalframe}
+	\setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+	\setcounter{framenumber}{\value{finalframe}}
+}
+
+\begin{document}
+	
+	\setbeamertemplate{background}
+{\includegraphics[width=\paperwidth,height=\paperheight]{figures/slide_bg.pdf}}
+\setbeamertemplate{footline}[cmpetheme]
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+\begin{frame}<beamer>
+	\frametitle{Outline}
+	\tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\section{Methodology of Selected Paper}
+
+\section{Our Approach}
+
+\section{Results}
+
+\section{}
+\begin{frame}
+	\frametitle{References}
+	\begin{thebibliography}{1}
+		\bibliographystyle{ieeetr}
+		
+%			\setbeamertemplate{bibliography item}[online]
+%			\bibitem{A} https://www.arb-silva.de/
+			
+			\setbeamertemplate{bibliography item}[article]
+			\bibitem{la2013genomic} La Rosa, Massimo and Fiannaca, Antonino and Rizzo, Riccardo and Urso, Alfonso. Genomic sequence classification using probabilistic topic modeling. International Meeting on Computational Intelligence Methods for Bioinformatics and Biostatistics, Springer, 49--61, 2013.
+					
+			\setbeamertemplate{bibliography item}[article]
+			\bibitem{la2015probabilistic} La Rosa, Massimo and Fiannaca, Antonino and Rizzo, Riccardo and Urso, Alfonso, Probabilistic topic modeling for the analysis and classification of genomic sequences. BMC bioinformatics, BioMed Central, 16, 6, S2, 2015.
+
+	\end{thebibliography}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Thank you ...}
+	\begin{center}
+		\LARGE{Any Questions?}
+	\end{center}
+\end{frame}
+
+\end{document}
