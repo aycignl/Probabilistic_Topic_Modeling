@@ -15,8 +15,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 
+
+
 def main():
 
+	global count
+	count = 0
 
 	results = {}
 
@@ -28,14 +32,19 @@ def main():
 	print("Start classifying with lda svm.")
 	#best half topics for sentence
 	results = ldasvm.classify(results)
-	showConfusionMatrix(results,"Probable Topic Assigned LDA - SVM")
 
+	real_labels = results['reallabels']
+	predicted_labels = results['predictedlabels']
+	class_names = list(set(real_labels))
+	write_to_files(real_labels, predicted_labels,class_names)
 	
+	showConfusionMatrix(results,"Probable Topic Assigned LDA - SVM")
 
 def showConfusionMatrix(results,caption):
 	real_labels = results['reallabels']
 	predicted_labels = results['predictedlabels']
 	class_names = list(set(real_labels))
+	write_to_files(real_labels, predicted_labels,class_names)
 	cnf_matrix = confusion_matrix(real_labels, predicted_labels, labels = class_names)
 
 	acc = np.asarray(cnf_matrix)
@@ -48,7 +57,29 @@ def showConfusionMatrix(results,caption):
 	plt.show()
 
 
+def write_to_files(real_labels, predicted_labels, class_names):
 
+	global count
+	output_file = open("results_"+str(count)+".txt", "w+", encoding="utf-8")
+	output_file.write("[ ")
+	for item in real_labels:
+		output_file.write(item)
+		output_file.write(" ")
+	output_file.write("]")
+	output_file.write("\n")
+	output_file.write("[ ")
+	for item in predicted_labels:
+		output_file.write(item)
+		output_file.write(" ")
+	output_file.write("]")
+	output_file.write("\n")
+	output_file.write("[ ")
+	for item in class_names:
+		output_file.write(item)
+		output_file.write(" ")
+	output_file.write("]")
+	
+	count = count + 1
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -90,4 +121,5 @@ if __name__ == '__main__':
 	trainFile = sys.argv[1]
 	testFile = sys.argv[2]
 	mode = sys.argv[3]
+	global count
 	main()

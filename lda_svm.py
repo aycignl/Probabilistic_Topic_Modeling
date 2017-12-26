@@ -44,20 +44,37 @@ def findBestCValue(train_vectors,train_family_list):
 			best_score = accuracy
 			best_c = c
 
-	return c
-
-def createFeatureVectors(topic_lda,top_topics): #reduce the number of topics if the feature vector is too big. or the number of families.
+	print("Best c for this data is "+str(best_c))
+	return best_c
+#since topic number is 200 we can use everyone not only top topics.
+def createFeatureVectors(topic_lda,top_topics):
 	feature_vector = []
+
 	for item in topic_lda:
 		item_vector = []
-		item_topic =  [i[0] for i in item]
-		for topic in top_topics:
-			if topic in item_topic:
-				index = item_topic.index(topic)
-				item_vector.append(item[index][1])
+		item_topic_index =  [i[0] for i in item]
+		item_topic_score =  [i[1] for i in item]
+		for number in range(200):
+			if number in item_topic_index:
+				index = item_topic_index.index(number)
+				item_vector.append(item_topic_score[index])
 			else:
 				item_vector.append(0)
 		
 		feature_vector.append(item_vector)
 
 	return feature_vector
+	# feature_vector = []
+	# for item in topic_lda:
+	# 	item_vector = []
+	# 	item_topic =  [i[0] for i in item]
+	# 	for topic in top_topics:
+	# 		if topic in item_topic:
+	# 			index = item_topic.index(topic)
+	# 			item_vector.append(item[index][1])
+	# 		else:
+	# 			item_vector.append(0)
+		
+	# 	feature_vector.append(item_vector)
+
+	# return feature_vector
