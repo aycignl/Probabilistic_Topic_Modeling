@@ -20,4 +20,4 @@ Implementations: <br>
 * **lda_svm_w2v.py**: Adds Asgari's word2vec embeddings to the lda_svm.py's feature vectors. Classification is done with svm.
 * **main.py**: Called with the train and test data file paths. Executes lda, lda_svm and lda_svm_w2v consecutively and shows confusion matrices using matplotlib. Need to close the corresponding confusion matrix for code to continue executing.<br>
   
-Our csv files formats are in **Family ID, SwissProt Accession ID, Sequences**.
+Our csv files formats are in **Asgari ID, Family ID, SwissProt Accession ID, Sequences**.
