@@ -9,6 +9,7 @@ global testFile
 
 import lda
 import lda_svm as ldasvm
+import lda_svm_w2v as ldaw2v
 
 from sklearn.metrics import confusion_matrix
 import numpy as np
@@ -24,21 +25,31 @@ def main():
 
 	results = {}
 
-	#if mode == 1: # "mostProbableWins": default
 	print("Start classifying with lda.")
 	results = lda.classify(trainFile, testFile)
 	showConfusionMatrix(results,"Best Topic Assigned LDA")
 
 	print("Start classifying with lda svm.")
 	#best half topics for sentence
-	results = ldasvm.classify(results)
+	results1 = ldasvm.classify(results)
 
-	real_labels = results['reallabels']
-	predicted_labels = results['predictedlabels']
+	real_labels = results1['reallabels']
+	predicted_labels = results1['predictedlabels']
 	class_names = list(set(real_labels))
 	write_to_files(real_labels, predicted_labels,class_names)
-	
-	showConfusionMatrix(results,"Probable Topic Assigned LDA - SVM")
+
+	showConfusionMatrix(results1,"Probable Topic Assigned LDA - SVM")
+
+	print("Start classifying with lda svm word2vec.")
+	#best half topics for sentence
+	results2 = ldaw2v.classify(results)
+
+	real_labels = results2['reallabels']
+	predicted_labels = results2['predictedlabels']
+	class_names = list(set(real_labels))
+	write_to_files(real_labels, predicted_labels,class_names)
+
+	showConfusionMatrix(results2,"Probable Topic Assigned LDA - SVM - Word2Vec")
 
 def showConfusionMatrix(results,caption):
 	real_labels = results['reallabels']
@@ -120,6 +131,5 @@ def plot_confusion_matrix(cm, classes,
 if __name__ == '__main__':
 	trainFile = sys.argv[1]
 	testFile = sys.argv[2]
-	mode = sys.argv[3]
 	global count
 	main()
