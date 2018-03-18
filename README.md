@@ -1,4 +1,4 @@
-# probabilisticTopicModeling
+# Probabilistic Topic Modeling
 Probabilistic Topics Modeling project for Cmpe59h - Bioinformatics Course @[Bogazici University](http://www.boun.edu.tr/en_US).<br>
 **Participants:** [Gonul Aycı](https://www.cmpe.boun.edu.tr/~gonul.ayci/), [Dilara Keküllüoğlu](https://dilara91.github.io/). <br> **Instructor:** [Assoc. Dr. Arzucan Özgür](https://www.cmpe.boun.edu.tr/~ozgur/)
 
