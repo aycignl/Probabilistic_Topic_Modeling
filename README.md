@@ -1,6 +1,6 @@
 # Probabilistic Topic Modeling
 Probabilistic Topics Modeling project for Cmpe59h - Bioinformatics Course @[Bogazici University](http://www.boun.edu.tr/en_US).<br>
-**Participants:** [Gonul Aycı](https://www.cmpe.boun.edu.tr/~gonul.ayci/), [Dilara Keküllüoğlu](https://dilara91.github.io/). <br> **Instructor:** [Assoc. Dr. Arzucan Özgür](https://www.cmpe.boun.edu.tr/~ozgur/)
+**Participants:** [Gönül Aycı](https://www.cmpe.boun.edu.tr/~gonul.ayci/), [Dilara Keküllüoğlu](https://dilara91.github.io/). <br> **Instructor:** [Assoc. Dr. Arzucan Özgür](https://www.cmpe.boun.edu.tr/~ozgur/)
 
 In this project, we use popular Asgari Word to vec(W2V) protein embeddings and the [dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMFHTN) they used. We implement our project using with **Python**. <br> 
 
